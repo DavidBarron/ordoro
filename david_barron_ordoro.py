@@ -16,20 +16,24 @@ def get_distinct_emails(data):
     return list({e['email'] for e in data if e['email'] and '@' in e['email']})  # let set() handle uniqueness
 
 
-def get_domain_counts(data):
+def get_multiple_domain_counts(data):
     """
     data is list of entry dicts with key "email"
     return dict of domain string and int count
     """
+    dom_seen = set()
     dom_count = dict()
 
     for e in data:
         if e['email'] and '@' in e['email']:  # lazy check valid email
             domain = e['email'].split('@')[1]
-            if domain in dom_count:
-                dom_count[domain] += 1
+            if domain in dom_seen:            # only want to count domains seen more than once
+                if domain in dom_count:
+                    dom_count[domain] += 1
+                else:
+                    dom_count[domain] = 2     # need to count this domain, plus the one seen before
             else:
-                dom_count[domain] = 1
+                dom_seen.add(domain)
 
     return dom_count
 
@@ -65,7 +69,7 @@ def do_etl():
         return
 
     emails = get_distinct_emails(body['data'])  # could error check here too, but don't wanna...
-    domain_count = get_domain_counts(body['data'])
+    domain_count = get_multiple_domain_counts(body['data'])
     april_logins = get_april_logins(body['data'])
 
     payload = {'your_email_address': MY_EMAIL, 'unique_emails': emails, 'user_domain_counts': domain_count,

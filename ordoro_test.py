@@ -1,5 +1,5 @@
 import unittest
-from david_barron_ordoro import get_distinct_emails, get_domain_counts, get_april_logins
+from david_barron_ordoro import get_distinct_emails, get_multiple_domain_counts, get_april_logins
 
 
 class TestOrdoro(unittest.TestCase):
@@ -32,33 +32,41 @@ class TestOrdoro(unittest.TestCase):
 
         self.assertCountEqual(result, ['blah1@test.com'])
 
-    def test_get_domain_counts_1_pass(self):
+    def test_get_multiple_domain_counts_1_pass(self):
         given = [{"login_date": None, "email": 'blah1@test.com'}, {"login_date": None, "email": 'blah2@test.com'}]
 
-        result = get_domain_counts(given)
+        result = get_multiple_domain_counts(given)
 
         self.assertDictEqual(result, {'test.com': 2})
 
-    def test_get_domain_counts_2_pass(self):
+    def test_get_multiple_domain_counts_2_pass(self):
         given = [{"login_date": None, "email": 'blah1@test.com'}, {"login_date": None, "email": 'blah2@gmail.com'}]
 
-        result = get_domain_counts(given)
+        result = get_multiple_domain_counts(given)
 
-        self.assertDictEqual(result, {'test.com': 1, 'gmail.com': 1})
+        self.assertDictEqual(result, {})
 
-    def test_get_domain_counts_none_pass(self):
+    def test_get_multiple_domain_counts_3_pass(self):
+        given = [{"login_date": None, "email": 'blah1@test.com'}, {"login_date": None, "email": 'some_dude@gmail.com'},
+                 {"login_date": None, "email": 'blah45@test.com'}]
+
+        result = get_multiple_domain_counts(given)
+
+        self.assertDictEqual(result, {'test.com': 2})
+
+    def test_get_multiple_domain_counts_none_pass(self):
         given = [{"login_date": None, "email": 'blah1@test.com'}, {"login_date": None, "email": None}]
 
-        result = get_domain_counts(given)
+        result = get_multiple_domain_counts(given)
 
-        self.assertDictEqual(result, {'test.com': 1})
+        self.assertDictEqual(result, {})
 
-    def test_get_domain_counts_not_email_pass(self):
+    def test_get_multiple_domain_counts_not_email_pass(self):
         given = [{"login_date": None, "email": 'blah1@test.com'}, {"login_date": None, "email": 'not an email, yo'}]
 
-        result = get_domain_counts(given)
+        result = get_multiple_domain_counts(given)
 
-        self.assertDictEqual(result, {'test.com': 1})
+        self.assertDictEqual(result, {})
 
     def test_get_april_logins_1_pass(self):
         given = [{"login_date": '2014-04-18T05:43:51+08:00', "email": 'blah1@test.com'},
