@@ -4,6 +4,8 @@ from dateutil.parser import parse
 
 MY_EMAIL = 'david.barron91@gmail.com'
 ORDORO_API = 'https://us-central1-marcy-playground.cloudfunctions.net/ordoroCodingTest'
+HTTP_OK = 200
+APRIL = 4
 
 
 def get_distinct_emails(data):
@@ -38,7 +40,7 @@ def is_april_datetime(login_date):
     return boolean
     """
     date = parse(login_date) # error check would be nic
-    return date.month == 4
+    return date.month == APRIL
 
 
 def get_april_logins(data):
@@ -52,7 +54,7 @@ def get_april_logins(data):
 def do_etl():
     response = requests.get(ORDORO_API)
 
-    if response.status_code != 200:
+    if response.status_code != HTTP_OK:
         print(f"Error making API call. Returned status code: {response.status_code}.")
         return
 
@@ -71,7 +73,7 @@ def do_etl():
 
     post_response = requests.post(ORDORO_API, json=payload)
 
-    if post_response.status_code != 200:
+    if post_response.status_code != HTTP_OK:
         print(f"Failed to post payload to Ordoro. Returned status code: {post_response.status_code}")
     else:
         print("Successfully posted payload to Ordoro.")
