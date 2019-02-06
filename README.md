@@ -1,4 +1,4 @@
-# ordoro-interview
+# ordoro
 Python version: Python 3.7.2
 
 ### set up virtiual env
